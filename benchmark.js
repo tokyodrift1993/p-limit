@@ -215,11 +215,11 @@ benchmarker
 		const tasks = Array.from({length: taskCount}, (_, id) => limit(() => adaptiveTask(id)));
 
 		// Adjust concurrency during execution
-		setTimeout(() => {
+		globalThis.setTimeout(() => {
 			limit.concurrency = 15; // Increase concurrency
 		}, 1000);
 
-		setTimeout(() => {
+		globalThis.setTimeout(() => {
 			limit.concurrency = 8; // Decrease concurrency
 		}, 2000);
 
