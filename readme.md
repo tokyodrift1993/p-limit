@@ -133,6 +133,10 @@ Minimum: `1`
 
 Concurrency limit.
 
+## Recipes
+
+See [recipes.md](recipes.md) for common use cases and patterns.
+
 ## FAQ
 
 ### How is this different from the [`p-queue`](https://github.com/sindresorhus/p-queue) package?
