@@ -36,10 +36,18 @@ Returns a `limit` function.
 
 #### concurrency
 
-Type: `number`\
+Type: `number | object`\
 Minimum: `1`
 
 Concurrency limit.
+
+You can pass a number or an options object with a `concurrency` property:
+
+```js
+import pLimit from 'p-limit';
+
+const limit = pLimit({concurrency: 1});
+```
 
 ### limit(fn, ...args)
 

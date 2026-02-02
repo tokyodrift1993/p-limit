@@ -51,10 +51,10 @@ export type LimitFunction = {
 /**
 Run multiple promise-returning & async functions with limited concurrency.
 
-@param concurrency - Concurrency limit. Minimum: `1`.
+@param concurrency - Concurrency limit. Minimum: `1`. Can also be an options object.
 @returns A `limit` function.
 */
-export default function pLimit(concurrency: number): LimitFunction;
+export default function pLimit(concurrency: number | Options): LimitFunction;
 
 export type Options = {
 	/**

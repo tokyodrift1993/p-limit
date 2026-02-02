@@ -208,6 +208,24 @@ test('map accepts an iterable (array iterator)', async t => {
 	t.deepEqual(results, [2, 4, 6, 8]);
 });
 
+test('accepts options object', async t => {
+	const limit = pLimit({concurrency: 1});
+
+	const input = [
+		limit(async () => {
+			await delay(50);
+			return 1;
+		}),
+		limit(async () => {
+			await delay(50);
+			return 2;
+		}),
+	];
+
+	t.deepEqual(await Promise.all(input), [1, 2]);
+	t.is(limit.concurrency, 1);
+});
+
 test('throws on invalid concurrency argument', t => {
 	t.throws(() => {
 		pLimit(0);
@@ -227,6 +245,14 @@ test('throws on invalid concurrency argument', t => {
 
 	t.throws(() => {
 		pLimit(true);
+	});
+
+	t.throws(() => {
+		pLimit({});
+	});
+
+	t.throws(() => {
+		pLimit({concurrency: 0});
 	});
 });
 

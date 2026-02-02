@@ -1,6 +1,10 @@
 import Queue from 'yocto-queue';
 
 export default function pLimit(concurrency) {
+	if (typeof concurrency === 'object') {
+		concurrency = concurrency.concurrency;
+	}
+
 	validateConcurrency(concurrency);
 
 	const queue = new Queue();
