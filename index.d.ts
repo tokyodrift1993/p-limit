@@ -28,9 +28,11 @@ export type LimitFunction = {
 
 	The mapper function receives the item value and its index.
 
+	This is a convenience function for processing inputs that arrive in batches. For more complex use cases, see [p-map](https://github.com/sindresorhus/p-map).
+
 	@param iterable - An iterable containing an argument for the given function.
 	@param mapperFunction - Promise-returning/async function.
-	@returns A Promise that returns an array of results.
+	@returns A promise equivalent to `Promise.all(Array.from(iterable, (item, index) => limit(mapperFunction, item, index)))`.
 	*/
 	map: <Input, ReturnType> (
 		iterable: Iterable<Input>,
@@ -39,7 +41,10 @@ export type LimitFunction = {
 
 	/**
 	@param fn - Promise-returning/async function.
-	@param arguments - Any arguments to pass through to `fn`. Support for passing arguments on to the `fn` is provided in order to be able to avoid creating unnecessary closures. You probably don't need this optimization unless you're pushing a lot of functions.
+	@param arguments - Any arguments to pass through to `fn`. Support for passing arguments on to the `fn` is provided in order to be able to avoid creating unnecessary closures. You probably don't need this optimization unless you're pushing a *lot* of functions.
+
+	Warning: Avoid calling the same `limit` function inside a function that is already limited by it. This can create a deadlock where inner tasks never run. Use a separate limiter for inner tasks.
+
 	@returns The promise returned by calling `fn(...arguments)`.
 	*/
 	<Arguments extends unknown[], ReturnType>(

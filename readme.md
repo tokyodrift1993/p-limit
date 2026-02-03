@@ -65,6 +65,8 @@ Any arguments to pass through to `fn`.
 
 Support for passing arguments on to the `fn` is provided in order to be able to avoid creating unnecessary closures. You probably don't need this optimization unless you're pushing a *lot* of functions.
 
+Warning: Avoid calling the same `limit` function inside a function that is already limited by it. This can create a deadlock where inner tasks never run. Use a separate limiter for inner tasks.
+
 ### limit.map(iterable, mapperFunction)
 
 Process an iterable of inputs with limited concurrency.
