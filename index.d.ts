@@ -20,6 +20,9 @@ export type LimitFunction = {
 	This might be useful if you want to teardown the queue at the end of your program's lifecycle or discard any function calls referencing an intermediary state of your app.
 
 	Note: This does not cancel promises that are already running.
+
+	When `rejectOnClear` is enabled, pending promises are rejected with an `AbortError`.
+	This is recommended if you await the returned promises, for example with `Promise.all`, so pending tasks do not remain unresolved after `clearQueue()`.
 	*/
 	clearQueue: () => void;
 
@@ -92,6 +95,15 @@ export type Options = {
 	Minimum: `1`.
 	*/
 	readonly concurrency: number;
+
+	/**
+	Reject pending promises with an `AbortError` when `clearQueue()` is called.
+
+	Default: `false`.
+
+	This is recommended if you await the returned promises, for example with `Promise.all`, so pending tasks do not remain unresolved after `clearQueue()`.
+	*/
+	readonly rejectOnClear?: boolean;
 };
 
 /**

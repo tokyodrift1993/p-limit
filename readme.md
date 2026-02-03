@@ -41,7 +41,15 @@ Minimum: `1`
 
 Concurrency limit.
 
-You can pass a number or an options object with a `concurrency` property:
+You can pass a number or an options object with a `concurrency` property.
+
+#### rejectOnClear
+
+Type: `boolean`\
+Default: `false`
+
+Reject pending promises with an `AbortError` when `clearQueue()` is called.
+This is recommended if you await the returned promises, for example with `Promise.all`, so pending tasks do not remain unresolved after `clearQueue()`.
 
 ```js
 import pLimit from 'p-limit';
@@ -93,6 +101,9 @@ This might be useful if you want to teardown the queue at the end of your progra
 
 Note: This does not cancel promises that are already running.
 
+When `rejectOnClear` is enabled, pending promises are rejected with an `AbortError`.
+This is recommended if you await the returned promises, for example with `Promise.all`, so pending tasks do not remain unresolved after `clearQueue()`.
+
 ### limit.concurrency
 
 Get or set the concurrency limit.
@@ -134,6 +145,14 @@ Type: `number`\
 Minimum: `1`
 
 Concurrency limit.
+
+#### rejectOnClear
+
+Type: `boolean`\
+Default: `false`
+
+Reject pending promises with an `AbortError` when `clearQueue()` is called.
+This is recommended if you await the returned promises, for example with `Promise.all`, so pending tasks do not remain unresolved after `clearQueue()`.
 
 ## Recipes
 

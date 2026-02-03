@@ -192,6 +192,24 @@ test('clearQueue', async t => {
 	t.is(limit.pendingCount, 0);
 });
 
+test('clearQueue rejects pending promises when enabled', async t => {
+	const limit = pLimit({concurrency: 1, rejectOnClear: true});
+
+	const runningPromise = limit(() => delay(100));
+	const pendingPromiseOne = limit(() => delay(10));
+	const pendingPromiseTwo = limit(() => delay(10));
+
+	await Promise.resolve();
+	t.is(limit.pendingCount, 2);
+
+	limit.clearQueue();
+	t.is(limit.pendingCount, 0);
+
+	await runningPromise;
+	await t.throwsAsync(pendingPromiseOne, {name: 'AbortError'});
+	await t.throwsAsync(pendingPromiseTwo, {name: 'AbortError'});
+});
+
 test('map', async t => {
 	const limit = pLimit(1);
 	const results = await limit.map([1, 2, 3, 4, 5, 6, 7], input => input + 1);
