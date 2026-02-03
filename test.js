@@ -1,3 +1,4 @@
+import process from 'node:process';
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {setTimeout as delay} from 'node:timers/promises';
 import test from 'ava';
@@ -192,7 +193,10 @@ test('clearQueue', async t => {
 	t.is(limit.pendingCount, 0);
 });
 
-test('clearQueue rejects pending promises when enabled', async t => {
+// Node.js 20 has a bug where DOMException is not properly handled by AVA's `throwsAsync`.
+const testClearQueueRejects = process.versions.node.startsWith('20.') ? test.skip : test;
+
+testClearQueueRejects('clearQueue rejects pending promises when enabled', async t => {
 	const limit = pLimit({concurrency: 1, rejectOnClear: true});
 
 	const runningPromise = limit(() => delay(100));
