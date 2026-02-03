@@ -163,6 +163,31 @@ const limitedFetchUrl = limitFunction(fetchUrl, {concurrency: 3});
 const results = await Promise.all(urls.map(url => limitedFetchUrl(url)));
 ```
 
+## Shared context provider
+
+Use `limit(fn, ...args)` to pass a shared context (like a client instance) to all limited calls:
+
+```js
+import pLimit from 'p-limit';
+import {S3} from '@aws-sdk/client-s3';
+
+const limit = pLimit(2);
+const client = new S3({});
+
+const runWithClient = (function_, ...arguments_) => limit(function_, client, ...arguments_);
+
+const fetchFromSomeBucket = (client, fileKey) => client.getObject({
+	Bucket: 'someBucket',
+	Key: fileKey
+});
+
+const results = await Promise.all([
+	runWithClient(fetchFromSomeBucket, 'someFileKey1'),
+	runWithClient(fetchFromSomeBucket, 'someFileKey2'),
+	runWithClient(fetchFromSomeBucket, 'someFileKey3')
+]);
+```
+
 ## Progress reporting
 
 Use `activeCount` and `pendingCount` to report progress while work is running:

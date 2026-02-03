@@ -90,6 +90,30 @@ test('accepts additional arguments', async t => {
 	await limit(a => t.is(a, symbol), symbol);
 });
 
+test('shared context with a limited provider helper', async t => {
+	const limit = pLimit(1);
+	const sharedContext = {values: []};
+
+	const runWithContext = (function_, ...arguments_) => limit(function_, sharedContext, ...arguments_);
+
+	const addValue = async (context, value) => {
+		context.values.push(value);
+		await delay(10);
+		return context.values.length;
+	};
+
+	const firstPromise = runWithContext(addValue, 'first');
+	const secondPromise = runWithContext(addValue, 'second');
+
+	t.is(limit.activeCount, 1);
+	t.is(limit.pendingCount, 1);
+
+	const results = await Promise.all([firstPromise, secondPromise]);
+
+	t.deepEqual(results, [1, 2]);
+	t.deepEqual(sharedContext.values, ['first', 'second']);
+});
+
 test('does not ignore errors', async t => {
 	const limit = pLimit(1);
 	const error = new Error('🦄');

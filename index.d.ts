@@ -56,8 +56,32 @@ export type LimitFunction = {
 /**
 Run multiple promise-returning & async functions with limited concurrency.
 
-@param concurrency - Concurrency limit. Minimum: `1`. Can also be an options object.
+@param concurrency - Concurrency limit. Minimum: `1`. You can pass a number or an options object with a `concurrency` property.
 @returns A `limit` function.
+
+@example
+```
+import pLimit from 'p-limit';
+
+const limit = pLimit(1);
+
+const input = [
+	limit(() => fetchSomething('foo')),
+	limit(() => fetchSomething('bar')),
+	limit(() => doSomething())
+];
+
+// Only one promise is run at once
+const result = await Promise.all(input);
+console.log(result);
+```
+
+@example
+```
+import pLimit from 'p-limit';
+
+const limit = pLimit({concurrency: 1});
+```
 */
 export default function pLimit(concurrency: number | Options): LimitFunction;
 
@@ -65,7 +89,7 @@ export type Options = {
 	/**
 	Concurrency limit.
 
- 	Minimum: `1`.
+	Minimum: `1`.
 	*/
 	readonly concurrency: number;
 };
